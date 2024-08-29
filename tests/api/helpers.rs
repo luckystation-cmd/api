@@ -245,8 +245,8 @@ impl TestUser {
     pub fn generate() -> Self {
         Self {
             user_id: Uuid::new_v4(),
-            username: Uuid::new_v4().to_string(),
-            password: Uuid::new_v4().to_string(),
+            username: String::from("admin"),
+            password: String::from("Xy$12"),
         }
     }
 
@@ -269,6 +269,7 @@ impl TestUser {
         .hash_password(self.password.as_bytes(), &salt)
         .unwrap()
         .to_string();
+        println!("password_hash  {}",&password_hash);
         sqlx::query!(
             "INSERT INTO users (user_id, username, password_hash)
             VALUES ($1, $2, $3)",
