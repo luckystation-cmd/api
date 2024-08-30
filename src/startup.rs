@@ -65,7 +65,7 @@ pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgP
 
 pub struct ApplicationBaseUrl(pub String);
 
-async fn run(
+pub async fn run(
     listener: TcpListener,
     db_pool: PgPool,
     base_url: String,
