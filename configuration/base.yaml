@@ -3,12 +3,12 @@ application:
   host: 0.0.0.0
   hmac_secret: "super-long-and-secret-random-key-needed-to-verify-message-integrity"
 database:
-  host: "127.0.0.1"
-  port: 5432
-  username: "postgres"
-  password: "xx34"
+  host: "app-a1787b7e-eb7a-463b-b533-512e12ca60eb-do-user-17506737-0.d.db.ondigitalocean.com"
+  port: 25060
+  username: "newsletter"
+  password: "AVNS_LUc1qVOh2blADpVWvG6"
   database_name: "newsletter"
-  require_ssl: false
+  require_ssl: true
 email_client:
   base_url: "localhost"
   sender_email: "test@gmail.com"
