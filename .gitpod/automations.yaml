@@ -1,0 +1,6 @@
+
+services:
+    database:
+        name: PostgreSQL
+        commands:
+            start: docker run postgres

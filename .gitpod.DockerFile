@@ -4,10 +4,10 @@ FROM gitpod/workspace-full:latest
 USER root
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -; \
         sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" > /etc/apt/sources.list.d/PostgreSQL.list'
-RUN apt-get update && apt-get install -y \
+RUN sudo apt-get update && sudo apt-get install -y \
         postgresql \
         postgresql-contrib \
-    && apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+    && sudo apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
 # Setup postgres server for user gitpod
 USER gitpod
@@ -19,6 +19,12 @@ RUN echo '#!/bin/bash\n\
 pg_ctl -D ~/pg/data/ -l ~/pg/logs/log -o "-k ~/pg/sockets" stop' > ~/pg/scripts/pg_stop.sh
 RUN chmod +x ~/pg/scripts/*
 ENV PATH="$HOME/pg/scripts:$PATH"
+
+# Install Redis.
+RUN sudo apt-get update \
+ && sudo apt-get install -y \
+  redis-server \
+ && sudo rm -rf /var/lib/apt/lists/*
 
 # Project specifics
 # Setup diesel_cli
