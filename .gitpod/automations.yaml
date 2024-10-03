@@ -1,17 +1,28 @@
-   services:
-    database:
-        name: PostgreSQL
-        description: The backend database
-        triggeredBy:
-            - postEnvironmentStart
-        commands:
-            start: 'docker run --name postgres_container -e POSTGRES_PASSWORD=xx34 -d -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres'
-    redis:
-        name: Redis
-        description: Our message bus
-        triggeredBy:
-            - postEnvironmentStart
-        commands:
-            start: >-
-                docker run --rm -t --name redis -p 6379:6379
-                redis/redis-stack-server:latest
+services:
+  postgres:
+    name: PostgreSQL
+    description: Our backend database
+    commands:
+      start: |
+        CONTAINER_NAME="postgres_container"
+
+        # Check if the container exists
+        if [ "$(docker ps -a -q -f name=$CONTAINER_NAME)" ]; then
+            # If it exists, start the container
+            echo "Starting existing container: $CONTAINER_NAME"
+            docker start --attach $CONTAINER_NAME
+        else
+            # If it doesn't exist, run a new container
+            echo "Creating and starting new container: $CONTAINER_NAME"
+            docker run --name $CONTAINER_NAME -e POSTGRES_PASSWORD=xx34 -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres
+        fi
+                   
+  redis:
+    name: Redis
+    description: Our message bus
+    triggeredBy:
+        - postEnvironmentStart
+    commands:
+        start: >-
+            docker run --rm -t --name redis -p 6379:6379
+            redis/redis-stack-server:latest
