@@ -17,7 +17,7 @@ You can browse the project at the end of previous chapters by switching to their
 - [Chapter 4](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-04)
 - [Chapter 5](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-05)
 - [Chapter 6, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-06-part0)
-- [Chapter 6, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-06-part1)
+- [Chapter 6, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-06-part1)wdad
 - [Chapter 7, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part0)
 - [Chapter 7, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part1)
 - [Chapter 7, Part 2](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part2)
