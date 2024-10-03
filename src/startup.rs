@@ -27,7 +27,6 @@ pub struct Application {
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database)
-            .await
             .expect("Failed to connect to Postgres.");
 
         let address = format!(
@@ -57,10 +56,10 @@ impl Application {
     }
 }
 
-pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, sqlx::Error> {
-    PgPoolOptions::new()
-        .connect_with(configuration.with_db())
-        .await
+pub fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, sqlx::Error> {
+   Ok(PgPoolOptions::new()
+        .connect_lazy_with(configuration.with_db()))
+
 }
 
 pub struct ApplicationBaseUrl(pub String);

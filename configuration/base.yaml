@@ -5,7 +5,7 @@ application:
 database:
   host: "127.0.0.1"
   port: 5432
-  username: "tg_api"
+  username: "postgres"
   password: "xx34"
   database_name: "tg_api"
   require_ssl: false
