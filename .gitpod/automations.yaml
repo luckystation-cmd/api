@@ -1,6 +1,17 @@
-
-services:
+   services:
     database:
         name: PostgreSQL
+        description: The backend database
+        triggeredBy:
+            - postEnvironmentStart
         commands:
-            start: docker run postgres
+            start: 'docker run --name postgres_container -e POSTGRES_PASSWORD=xx34 -d -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres'
+    redis:
+        name: Redis
+        description: Our message bus
+        triggeredBy:
+            - postEnvironmentStart
+        commands:
+            start: >-
+                docker run --rm -t --name redis -p 6379:6379
+                redis/redis-stack-server:latest
