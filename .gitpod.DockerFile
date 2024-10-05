@@ -1,42 +1,56 @@
 FROM gitpod/workspace-full:latest
 
-# Install postgres
+# Install postgres as root
 USER root
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -; \
-        sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" > /etc/apt/sources.list.d/PostgreSQL.list'
-RUN sudo apt-get update && sudo apt-get install -y \
-        postgresql \
-        postgresql-contrib \
-    && sudo apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main" > /etc/apt/sources.list.d/PostgreSQL.list
 
-# Setup postgres server for user gitpod
+# Install PostgreSQL and verify installation
+RUN apt-get update && apt-get install -y postgresql postgresql-contrib \
+    && apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+
+# Verify if initdb is available under root
+RUN which initdb || echo "initdb not found under root"
+RUN /usr/lib/postgresql/14/bin/initdb --version || echo "initdb failed to run under root"
+
+# Switch to gitpod user Update
 USER gitpod
-ENV PATH="/usr/lib/postgresql/14/bin:$PATH"
-RUN mkdir -p ~/pg/data; mkdir -p ~/pg/scripts; mkdir -p ~/pg/logs; mkdir -p ~/pg/sockets; initdb -D pg/data/
+
+# Verify if initdb is available under gitpod
+RUN which initdb || echo "initdb not found under gitpod user"
+
+# Try using absolute path to initdb under gitpod user
+RUN /usr/lib/postgresql/14/bin/initdb -D ~/pg/data/ || echo "initdb failed under gitpod user"
+
+# Create directories and initialize the DB
+RUN mkdir -p ~/pg/data ~/pg/scripts ~/pg/logs ~/pg/sockets
+RUN /usr/lib/postgresql/14/bin/initdb -D ~/pg/data/ || echo "initdb initialization failed"
+
+# Create start/stop scripts
 RUN echo '#!/bin/bash\n\
-pg_ctl -D ~/pg/data/ -l ~/pg/logs/log -o "-k ~/pg/sockets" start' > ~/pg/scripts/pg_start.sh
-RUN echo '#!/bin/bash\n\
+pg_ctl -D ~/pg/data/ -l ~/pg/logs/log -o "-k ~/pg/sockets" start' > ~/pg/scripts/pg_start.sh \
+&& echo '#!/bin/bash\n\
 pg_ctl -D ~/pg/data/ -l ~/pg/logs/log -o "-k ~/pg/sockets" stop' > ~/pg/scripts/pg_stop.sh
+
+# Make the scripts executable
 RUN chmod +x ~/pg/scripts/*
+
+# Add the custom scripts to PATH
 ENV PATH="$HOME/pg/scripts:$PATH"
 
-# Install Redis.
-RUN sudo apt-get update \
- && sudo apt-get install -y \
-  redis-server \
- && sudo rm -rf /var/lib/apt/lists/*
+# Install Redis as root
+USER root
+RUN apt-get update \
+ && apt-get install -y redis-server \
+ && rm -rf /var/lib/apt/lists/*
 
-# Project specifics
-# Setup diesel_cli
+# Setup diesel_cli for the project
+USER gitpod
 ENV PATH="$HOME/.cargo/bin:$PATH"
 RUN cargo install diesel_cli --no-default-features --features postgres
 
-# Some transitive dependencies are very picky: We need the nightly build build on the 2018-04-14, meant for the 2018-04-15
-RUN rustup default 1.75.0
 # Set some environment variables
+RUN rustup default 1.75.0
 ENV DATABASE_URL=postgres://postgres@127.0.0.1:5432/tg_api
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=8000
-
-# Give back control
-USER root
