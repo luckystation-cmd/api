@@ -1,19 +1,25 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu
+FROM ubuntu:latest
 
-# use this Dockerfile to install additional tools you might need, e.g.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-RUN apt-get update
+USER root
+ENV USER root
 
-# Get Ubuntu packages
-RUN apt-get install -y \
-    build-essential \
-    curl
+# Install package dependencies.
+RUN apt-get update \
+    && apt-get install -y \
+    apt-utils \
+    curl \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Update new packages
-RUN apt-get update
+# Install Rust
+RUN curl https://sh.rustup.rs -sSf > /tmp/rustup-init.sh \
+    && chmod +x /tmp/rustup-init.sh \
+    && sh /tmp/rustup-init.sh -y \
+    && rm -rf /tmp/rustup-init.sh
+ENV PATH "$PATH:~/.cargo/bin"
 
-# Get Rust
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+# Update the local crate index
+RUN ~/.cargo/bin/cargo search
 
-RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+# Install nightly rust.
+RUN ~/.cargo/bin/rustup default 1.81.0
