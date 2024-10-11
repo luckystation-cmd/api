@@ -6,7 +6,7 @@ ENV USER root
 # Install package dependencies.
 RUN apt-get update \
     && apt-get install -y \
-    apt-utils curl gcc lld clang libssl-dev postgresql-client \
+    apt-utils curl gcc lld clang libssl-dev libpq-dev postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust
@@ -18,6 +18,6 @@ ENV PATH "$PATH:~/.cargo/bin"
 
 # Update the local crate index
 RUN ~/.cargo/bin/cargo search
-
-# Install nightly rust.
+RUN cargo install diesel_cli --no-default-features --features postgres
+# Install rust 1.81.0
 RUN ~/.cargo/bin/rustup default 1.81.0
