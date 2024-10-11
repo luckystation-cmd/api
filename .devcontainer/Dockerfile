@@ -6,9 +6,7 @@ ENV USER root
 # Install package dependencies.
 RUN apt-get update \
     && apt-get install -y \
-    apt-utils \
-    curl \
-    gcc \
+    apt-utils curl gcc lld clang libssl-dev postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust
