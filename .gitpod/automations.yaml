@@ -16,6 +16,7 @@ services:
             echo "Creating and starting new container: $CONTAINER_NAME"
             docker run --name $CONTAINER_NAME -e POSTGRES_PASSWORD=xx34 -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres
         fi
+        sqlx database setup
                    
   redis:
     name: Redis
