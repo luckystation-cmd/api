@@ -18,6 +18,7 @@ ENV PATH "$PATH:~/.cargo/bin"
 
 # Update the local crate index
 RUN ~/.cargo/bin/cargo search
-# RUN cargo install diesel_cli --no-default-features --features postgres
+
+RUN cargo install diesel_cli --no-default-features --features postgres
 # Install rust 1.81.0
 RUN ~/.cargo/bin/rustup default 1.81.0
