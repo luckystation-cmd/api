@@ -2,7 +2,7 @@ name: zero2prod
 # See https://www.digitalocean.com/docs/app-platform/#regional-availability for the available options
 # You can get region slugs from https://www.digitalocean.com/docs/platform/availability-matrix/
 # `fra` stands for Frankfurt (Germany - EU)
-region: fra
+region: sgp
 services:
   - name: zero2prod
     # Relative to the repository root
@@ -11,7 +11,7 @@ services:
     github:
       branch: main
       deploy_on_push: true
-      repo: yuthstyle88/api
+      repo: luckystation-cmd/api
     # Active probe used by DigitalOcean's to ensure our application is healthy
     health_check:
       # The path to our health check endpoint! It turned out to be useful in the end!
@@ -22,7 +22,7 @@ services:
     # For production workloads we'd go for at least two!
     instance_count: 1
     # Let's keep the bill lean for now...
-    instance_size_slug: basic-xxs
+    instance_size_slug: apps-s-1vcpu-0.5gb
     # All incoming requests should be routed to our app
     routes:
       - path: /
